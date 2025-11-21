@@ -1,0 +1,179 @@
+.challenge-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.challenge-modal {
+  background-color: var(--color-bg-secondary);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal-header h2 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text);
+  transform: none;
+}
+
+.modal-content {
+  padding: 25px;
+}
+
+.challenge-word {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 12px;
+}
+
+.challenge-word .label {
+  display: block;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.challenge-word .word {
+  display: block;
+  font-size: 36px;
+  font-weight: bold;
+  color: var(--color-warning);
+  font-family: monospace;
+}
+
+.challenge-question {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 25px;
+  color: var(--color-text-secondary);
+}
+
+.vote-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.vote-buttons button {
+  flex: 1;
+  padding: 15px;
+  font-size: 18px;
+}
+
+.voting-status {
+  text-align: center;
+}
+
+.voting-status > p {
+  margin-bottom: 20px;
+  color: var(--color-text-secondary);
+}
+
+.vote-count {
+  margin-top: 20px;
+}
+
+.vote-bar {
+  display: flex;
+  height: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--color-bg-tertiary);
+  margin-bottom: 10px;
+}
+
+.valid-bar,
+.invalid-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: width 0.3s ease;
+}
+
+.valid-bar {
+  background-color: var(--color-secondary);
+}
+
+.invalid-bar {
+  background-color: var(--color-danger);
+}
+
+.vote-text {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.challenge-result {
+  text-align: center;
+  padding: 30px;
+}
+
+.result-text {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.challenge-result p:last-child {
+  color: var(--color-text-secondary);
+}
+

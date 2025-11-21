@@ -1,0 +1,33 @@
+{
+  "prefixes": [
+    "me",
+    "mem",
+    "men",
+    "meng",
+    "meny",
+    "di",
+    "ke",
+    "se",
+    "ber",
+    "bel",
+    "ter",
+    "pe",
+    "pem",
+    "pen",
+    "peng",
+    "peny",
+    "per"
+  ],
+  "suffixes": [
+    "kan",
+    "i",
+    "an",
+    "nya"
+  ],
+  "confixes": [
+    "ke-an",
+    "per-an",
+    "pe-an"
+  ]
+}
+

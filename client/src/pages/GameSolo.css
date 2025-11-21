@@ -1,0 +1,348 @@
+/* GameSolo specific styles */
+
+.game-header-solo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--color-bg-secondary);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.player-turn-info h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 20px;
+}
+
+.timer-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timer-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--color-primary);
+  background-color: var(--color-bg-tertiary);
+  padding: 10px 20px;
+  border-radius: 8px;
+  min-width: 80px;
+  text-align: center;
+}
+
+.action-buttons-solo {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.action-buttons-solo button {
+  min-width: 150px;
+}
+
+.table-section h3 {
+  text-align: center;
+  color: var(--color-text);
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.play-area {
+  width: 100%;
+  padding: 30px;
+  background-color: var(--table-color);
+  border-radius: 12px;
+  border: 3px solid #654321;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cards-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 0;
+}
+
+.card-slot {
+  width: 70px;
+  height: 120px;
+  border: 3px dashed transparent;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.card-slot.active {
+  border-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+.card-slot.active:hover {
+  border-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.slot-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.slot-number {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  background-color: rgba(59, 130, 246, 0.8);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placed-card {
+  animation: placeCard 0.3s ease-out;
+}
+
+.placed-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #22c55e;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.bot-badge {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  background-color: #f59e0b;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.bot-placed-card {
+  animation: botPlaceCard 0.5s ease-out;
+  border: 2px solid #f59e0b;
+}
+
+@keyframes botPlaceCard {
+  from {
+    transform: scale(0.3) translateY(-30px);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1) translateY(-5px);
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.placement-instruction {
+  text-align: center;
+  color: var(--color-text-secondary);
+  margin-top: 15px;
+  font-size: 14px;
+  background-color: var(--color-bg-secondary);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.selection-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #22c55e;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.game-card.selected {
+  border: 3px solid #22c55e;
+  transform: translateY(-8px);
+  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.4);
+}
+
+.game-card.disabled {
+  cursor: not-allowed !important;
+  opacity: 0.5 !important;
+  pointer-events: none;
+}
+
+@keyframes placeCard {
+  from {
+    transform: scale(0.5) translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* SweetAlert Toast Styles */
+.swal-toast {
+  font-size: 14px !important;
+  padding: 12px 16px !important;
+}
+
+.swal-toast .swal2-title {
+  font-size: 16px !important;
+  margin-bottom: 4px !important;
+}
+
+.swal-toast .swal2-content {
+  font-size: 13px !important;
+  margin-top: 4px !important;
+}
+
+/* Game Over Screen */
+.game-finished {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 40px;
+  text-align: center;
+}
+
+.game-over-title {
+  font-size: 36px;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+}
+
+.winner-section {
+  margin-bottom: 30px;
+}
+
+.winner-section h2 {
+  font-size: 24px;
+  color: #fbbf24;
+  margin: 0;
+}
+
+.final-scores {
+  margin-top: 30px;
+}
+
+.final-scores h3 {
+  font-size: 20px;
+  color: var(--color-text);
+  margin-bottom: 20px;
+}
+
+.scores-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.score-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.score-item.winner {
+  border-color: #fbbf24;
+  background-color: rgba(251, 191, 36, 0.1);
+}
+
+.score-rank {
+  font-size: 24px;
+  min-width: 40px;
+}
+
+.score-info {
+  flex: 1;
+  text-align: left;
+}
+
+.score-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.winner-badge {
+  color: #fbbf24;
+  font-size: 14px;
+}
+
+.score-details {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.penalty-text {
+  color: #ef4444;
+}
+
+.bonus-text {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.score-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--color-primary);
+  min-width: 80px;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .game-header-solo {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .action-buttons-solo {
+    flex-direction: column;
+  }
+
+  .action-buttons-solo button {
+    width: 100%;
+  }
+}
+

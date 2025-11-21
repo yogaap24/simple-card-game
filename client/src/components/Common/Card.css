@@ -1,0 +1,66 @@
+.game-card {
+  width: 90px;
+  height: 120px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s;
+  position: relative;
+  color: white;
+  font-weight: bold;
+  border: 3px solid transparent;
+}
+
+.game-card.clickable {
+  cursor: pointer;
+}
+
+.game-card.clickable:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.game-card.selected {
+  border-color: #22c55e;
+  transform: translateY(-8px);
+  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.4);
+}
+
+.card-type {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  opacity: 0.8;
+  font-weight: 600;
+}
+
+.card-value {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  word-break: break-all;
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .game-card {
+    width: 70px;
+    height: 100px;
+  }
+
+  .card-value {
+    font-size: 22px;
+  }
+
+  .card-type {
+    font-size: 8px;
+    top: 6px;
+    left: 6px;
+  }
+}
+

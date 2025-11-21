@@ -1,0 +1,186 @@
+.waiting-room {
+  max-width: 1000px;
+}
+
+.waiting-room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.waiting-room-header h1 {
+  font-size: 36px;
+  margin-bottom: 5px;
+}
+
+.room-code {
+  color: var(--color-text-secondary);
+  font-size: 16px;
+}
+
+.room-code strong {
+  color: var(--color-primary);
+  font-size: 20px;
+}
+
+.waiting-room-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.players-section {
+  padding: 25px;
+}
+
+.players-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.players-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.player-item {
+  background-color: var(--color-bg-tertiary);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.player-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.player-status {
+  font-size: 14px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.player-status.ready {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: var(--color-secondary);
+}
+
+.player-status.not_ready {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: var(--color-warning);
+}
+
+.info-message {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.ready-section {
+  padding: 25px;
+}
+
+.ready-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.settings-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 8px;
+}
+
+.setting-item span:first-child {
+  color: var(--color-text-secondary);
+}
+
+.setting-item span:last-child {
+  font-weight: 600;
+}
+
+.ready-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.ready-actions button {
+  width: 100%;
+}
+
+.start-info {
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.bot-ready-info {
+  text-align: center;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--color-secondary);
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.game-rules {
+  padding: 25px;
+}
+
+.game-rules h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.game-rules ul {
+  list-style: none;
+  padding: 0;
+}
+
+.game-rules li {
+  padding: 8px 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .waiting-room-content {
+    grid-template-columns: 1fr;
+  }
+
+  .waiting-room-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

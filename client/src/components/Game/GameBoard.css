@@ -1,0 +1,191 @@
+.game-board-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.game-board {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: calc(100vh - 40px);
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-bg-secondary);
+  padding: 15px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.game-info h2 {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.deck-info {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.btn-small {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.game-main {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+}
+
+.players-sidebar {
+  background-color: var(--color-bg-secondary);
+  padding: 20px;
+  border-radius: 12px;
+  overflow-y: auto;
+}
+
+.play-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  background-color: var(--color-bg-secondary);
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.play-controls {
+  width: 100%;
+  max-width: 600px;
+}
+
+.card-actions {
+  text-align: center;
+}
+
+.selected-info {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: var(--color-text-secondary);
+}
+
+.selected-info strong {
+  color: var(--color-primary);
+  font-size: 24px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.action-buttons button {
+  flex: 1;
+}
+
+.turn-info {
+  text-align: center;
+}
+
+.turn-info p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.waiting-turn {
+  text-align: center;
+  padding: 20px;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.waiting-turn p {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+
+.player-hand-section {
+  background-color: var(--color-bg-secondary);
+  padding: 20px;
+  border-radius: 12px;
+  min-height: 180px;
+}
+
+.game-finished {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.game-finished .card {
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.game-finished h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.game-finished h2 {
+  font-size: 32px;
+  color: var(--color-primary);
+  margin-bottom: 30px;
+}
+
+.final-scores {
+  margin: 30px 0;
+}
+
+.final-scores h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.score-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+@media (max-width: 1024px) {
+  .game-main {
+    grid-template-columns: 1fr;
+  }
+
+  .players-sidebar {
+    max-height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .game-board {
+    height: auto;
+  }
+}
+

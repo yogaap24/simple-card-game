@@ -1,0 +1,198 @@
+.table-cards {
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+}
+
+.table-title {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: var(--color-text-secondary);
+}
+
+.empty-table {
+  padding: 60px 40px;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 12px;
+  border: 2px dashed var(--color-border);
+}
+
+.empty-table p {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+}
+
+.empty-table .subtitle {
+  font-size: 14px;
+  margin-top: 10px;
+  color: var(--color-border);
+}
+
+.table-word {
+  background-color: var(--table-color);
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 3px solid #654321;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* Drop zone indicators */
+.table-word::before,
+.table-word::after {
+  content: 'DROP ZONE';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px;
+  height: 150px;
+  border: 4px dashed rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  line-height: 1.2;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.table-word::before {
+  left: 20px;
+  content: 'KIRI\A←';
+  white-space: pre;
+}
+
+.table-word::after {
+  right: 20px;
+  content: 'KANAN\A→';
+  white-space: pre;
+}
+
+.word-display {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.word-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.word-text .label {
+  font-size: 14px;
+  color: #f5f1eb;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.word-text .word {
+  font-size: 36px;
+  font-weight: bold;
+  color: #ffffff;
+  font-family: monospace;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.challenge-btn {
+  background-color: var(--color-warning);
+  color: var(--color-bg);
+  padding: 12px 24px;
+  font-weight: 600;
+}
+
+.challenge-btn:hover {
+  background-color: #f59e0b;
+}
+
+/* Word Information from KBBI API */
+.word-info {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(79, 70, 229, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(79, 70, 229, 0.3);
+}
+
+.info-section {
+  margin-bottom: 12px;
+}
+
+.info-section:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.derived-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.derived-word {
+  display: inline-block;
+  padding: 4px 10px;
+  background-color: var(--color-bg-secondary);
+  border-radius: 12px;
+  font-size: 13px;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.derived-word.more {
+  background-color: transparent;
+  border-style: dashed;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.definition {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  margin: 0;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .word-text .word {
+    font-size: 28px;
+  }
+
+  .table-word {
+    padding: 20px;
+  }
+
+  .word-info {
+    padding: 12px;
+  }
+
+  .derived-word {
+    font-size: 12px;
+    padding: 3px 8px;
+  }
+
+  .definition {
+    font-size: 13px;
+  }
+}
+

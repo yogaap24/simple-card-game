@@ -1,0 +1,75 @@
+# Card Game BISINDO - Development Guidelines
+
+## Project Structure
+- `/server` - Backend Node.js + Express + Socket.IO + PostgreSQL
+- `/client` - Frontend React + Vite
+- `/shared` - Shared type definitions and constants
+- `/data` - Indonesian word dictionary (fallback)
+- `GUIDE.md` - Complete documentation
+
+## Code Style
+- Use ES6+ features
+- Prefer arrow functions
+- Use async/await over promises
+- Add JSDoc comments for functions
+- Follow existing naming conventions
+
+## Socket.IO Events
+- All events defined in `shared/events.js`
+- Never hardcode event names
+- Always handle errors
+
+## Game Rules
+- Minimum 4 players, maximum 6 players (or VS Bots for solo)
+- 7 starting cards per player
+- 20 seconds per turn
+- No duplicate cards between players in same room
+
+## Database
+- PostgreSQL with Sequelize ORM
+- Users and Rooms tables
+- Connection string in `server/.env`
+
+## Word Validation
+- Primary: KBBI API (https://kbbi.raf555.dev)
+- Fallback: Local dictionary (500+ words)
+- Shows derived words and definitions
+
+## Bot Players
+- AI opponents in `server/game/BotPlayer.js`
+- 3 difficulty levels: easy, medium, hard
+- Solo testing and practice mode
+- Smart move selection based on word length
+
+## Testing
+- **Solo**: Use VS Bot mode (instant testing)
+- **Multiplayer**: Test with 4+ browser windows
+- Test disconnect/reconnect scenarios
+- Test challenge system thoroughly
+- Test KBBI API integration
+
+## Common Tasks
+
+### Add New Indonesian Words
+Edit: `data/kbbi-words.json` (fallback only, KBBI API is primary)
+
+### Modify Game Constants
+Edit: `shared/constants.js`
+
+### Add New Socket Event
+1. Add to `shared/events.js`
+2. Implement handler in `server/socket/gameSocket.js`
+3. Add listener in relevant React component
+
+### Change Card Colors
+Edit CSS variables in: `client/src/index.css`
+
+### Modify Bot Behavior
+Edit: `server/game/BotPlayer.js`
+
+### Database Changes
+Models: `server/models/User.js` and `server/models/Room.js`
+
+## Documentation
+See `GUIDE.md` for complete setup, testing, and deployment instructions.
+
