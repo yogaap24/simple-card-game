@@ -6,6 +6,13 @@ axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:50
 
 const AuthContext = createContext(null);
 
+// Development-only logging
+const devError = (...args) => {
+	if (import.meta.env.DEV) {
+		console.error(...args);
+	}
+};
+
 export const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [token, setToken] = useState(localStorage.getItem('token'));
@@ -26,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 					verifyToken();
 				}
 			} catch (e) {
-				console.error('Failed to parse stored user:', e);
+				devError('Failed to parse stored user:', e);
 				setLoading(false);
 			}
 		} else if (token) {
@@ -43,7 +50,7 @@ export const AuthProvider = ({ children }) => {
 			});
 			setUser(response.data.user);
 		} catch (error) {
-			console.error('Token verification failed:', error);
+			devError('Token verification failed:', error);
 			logout();
 		} finally {
 			setLoading(false);

@@ -4,6 +4,19 @@ import { CLIENT_EVENTS, SERVER_EVENTS } from '../../../shared/events';
 
 const SocketContext = createContext(null);
 
+// Development-only logging
+const devLog = (...args) => {
+	if (import.meta.env.DEV) {
+		console.log(...args);
+	}
+};
+
+const devError = (...args) => {
+	if (import.meta.env.DEV) {
+		console.error(...args);
+	}
+};
+
 export const SocketProvider = ({ children }) => {
 	const [socket, setSocket] = useState(null);
 	const [connected, setConnected] = useState(false);
@@ -24,7 +37,7 @@ export const SocketProvider = ({ children }) => {
 		});
 
 		newSocket.on('connect', () => {
-			console.log('✅ Connected to server');
+			devLog('✅ Connected to server');
 			setConnected(true);
 
 			// Re-authenticate on reconnect if user exists
@@ -33,28 +46,28 @@ export const SocketProvider = ({ children }) => {
 				try {
 					const user = JSON.parse(userData);
 					if (user.isGuest) {
-						console.log('🔄 Re-authenticating guest user:', user.username);
+						devLog('🔄 Re-authenticating guest user:', user.username);
 						newSocket.emit(CLIENT_EVENTS.GUEST_LOGIN, { username: user.username });
 					}
 				} catch (e) {
-					console.error('Failed to parse user data:', e);
+					devError('Failed to parse user data:', e);
 				}
 			}
 		});
 
 		newSocket.on('disconnect', () => {
-			console.log('❌ Disconnected from server');
+			devLog('❌ Disconnected from server');
 			setConnected(false);
 			setAuthenticated(false);
 		});
 
 		newSocket.on('connect_error', (error) => {
-			console.error('Connection error:', error);
+			devError('Connection error:', error);
 			setConnected(false);
 		});
 
 		newSocket.on(SERVER_EVENTS.AUTH_SUCCESS, () => {
-			console.log('✅ Authenticated with server');
+			devLog('✅ Authenticated with server');
 			setAuthenticated(true);
 		});
 
@@ -70,7 +83,7 @@ export const SocketProvider = ({ children }) => {
 		if (socket && connected) {
 			socket.emit(event, data);
 		} else {
-			console.error('Socket not connected');
+			devError('Socket not connected');
 		}
 	};
 
@@ -92,7 +105,7 @@ export const SocketProvider = ({ children }) => {
 			sessionStorage.setItem('gameUser', JSON.stringify(user));
 
 			if (connected) {
-				console.log('🔐 Authenticating user with server:', user.username);
+				devLog('🔐 Authenticating user with server:', user.username);
 				socket.emit(CLIENT_EVENTS.GUEST_LOGIN, { username: user.username });
 			}
 		}

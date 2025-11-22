@@ -27,15 +27,22 @@ function GameSolo() {
 	const isInitializedRef = useRef(false); // Prevent double initialization
 	const isMountedRef = useRef(true); // Track if component is still mounted
 
+	// Development-only logging
+	const devLog = (...args) => {
+		if (import.meta.env.DEV) {
+			console.log(...args);
+		}
+	};
+
 	// Helper for toast - with mounted check (RESPONSIVE)
 	const showToast = (icon, title, text, timer = 2000) => {
 		// ONLY show toast if component is still mounted
 		if (!isMountedRef.current) {
-			console.log('🚫 Toast blocked - component unmounted:', title);
+			devLog('🚫 Toast blocked - component unmounted:', title);
 			return;
 		}
 
-		console.log('✅ Showing toast:', title, 'isMounted:', isMountedRef.current);
+		devLog('✅ Showing toast:', title, 'isMounted:', isMountedRef.current);
 
 		// Responsive width based on screen size
 		const isMobile = window.innerWidth <= 768;
@@ -93,7 +100,7 @@ function GameSolo() {
 
 		// Cleanup on unmount
 		return () => {
-			console.log('🔴 GameSolo unmounting - setting isMountedRef to false');
+			devLog('🔴 GameSolo unmounting - setting isMountedRef to false');
 			isMountedRef.current = false;
 			if (timerRef.current) clearInterval(timerRef.current);
 			if (botTurnTimeoutRef.current) clearTimeout(botTurnTimeoutRef.current);
@@ -185,20 +192,20 @@ function GameSolo() {
 			difficulty: config.difficulty
 		};
 
-		console.log(`🎲 Random start: ${players[randomStartIndex].name} goes first!`);
+		devLog(`🎲 Random start: ${players[randomStartIndex].name} goes first!`);
 
 		setGameState(initialState);
 		setLoading(false);
 
 		// Auto start after 1 second
 		setTimeout(() => {
-			console.log('⏰ Starting game now...');
+			devLog('⏰ Starting game now...');
 			startGame(initialState);
 		}, 1000);
 	};
 
 	const startGame = (state) => {
-		console.log('✅ startGame called! Changing phase from WAITING to PLAYING');
+		devLog('✅ startGame called! Changing phase from WAITING to PLAYING');
 		// Use imported dictionary
 		const baseWords = BASE_WORDS;
 		const affixes = AFFIXES;
@@ -230,7 +237,7 @@ function GameSolo() {
 			type: 'BASE_WORD'
 		};
 
-		console.log('🎮 Setting gameState to PLAYING with table card:', randomFragment);
+		devLog('🎮 Setting gameState to PLAYING with table card:', randomFragment);
 		setGameState({
 			...state,
 			players: updatedPlayers,
@@ -238,7 +245,7 @@ function GameSolo() {
 			currentWord: firstCard.value,
 			phase: 'PLAYING'
 		});
-		console.log('✅ setGameState called - phase should now be PLAYING');
+		devLog('✅ setGameState called - phase should now be PLAYING');
 	};
 
 	const generateHand = (count, fragments, affixes) => {
@@ -514,9 +521,9 @@ function GameSolo() {
 			if (response.ok) {
 				const data = await response.json();
 				isValid = data.valid === true;
-				console.log(`✅ KBBI API (via proxy): "${word}" - Valid:`, isValid);
+				devLog(`✅ KBBI API (via proxy): "${word}" - Valid:`, isValid);
 			} else {
-				console.log(`❌ KBBI API proxy: "${word}" - Response not OK:`, response.status);
+				devLog(`❌ KBBI API proxy: "${word}" - Response not OK:`, response.status);
 			}
 		} catch (error) {
 			console.error('KBBI API proxy error:', error);
@@ -538,7 +545,7 @@ function GameSolo() {
 			// Draw penalty card
 			drawCardToPlayer(0);
 
-			console.log(`❌ Invalid word! ${updatedPlayers[0].username}: -2 poin`);
+			devLog(`❌ Invalid word! ${updatedPlayers[0].username}: -2 poin`);
 
 			// END TURN - move to next player
 			const nextPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
@@ -712,14 +719,14 @@ function GameSolo() {
 		updatedPlayers[0].score = updatedPlayers[0].score - 1;
 
 		const newSkipCount = consecutiveSkips + 1;
-		console.log(`Skip count: ${newSkipCount} / ${gameState.players.length}`);
+		devLog(`Skip count: ${newSkipCount} / ${gameState.players.length}`);
 
 		// Show alert for skip
 		showToast('info', `${playerName} skip turn`, '-1 poin', 1500);
 
 		// Check if all players skipped
 		if (newSkipCount >= gameState.players.length) {
-			console.log('All players skipped! Resetting table...');
+			devLog('All players skipped! Resetting table...');
 
 			// Reset table: Only 2 characters, vowel+consonant, not "nd", "ng", "aa"
 			const fragments = [];
@@ -739,7 +746,7 @@ function GameSolo() {
 				type: 'BASE_WORD'
 			};
 
-			console.log(`New table card: ${newCard.value}`);
+			devLog(`New table card: ${newCard.value}`);
 
 			// Update state with new table card and reset skip count
 			const newGameState = {
@@ -972,7 +979,7 @@ function GameSolo() {
 					isInvalid: true // Flag this as intentionally invalid
 				};
 
-				console.log(`🤖 ${bot.name} will try invalid word (random play)`);
+				devLog(`🤖 ${bot.name} will try invalid word (random play)`);
 			}
 		}
 
@@ -1014,7 +1021,7 @@ function GameSolo() {
 					setIsBotMoving(false);
 
 					showToast('error', `${bot.name} salah!`, `Kata ${word.toUpperCase()} tidak valid. -2 poin`, 2000);
-					console.log(`🤖 ${bot.name} played invalid word: ${word} (-2 points)`);
+					devLog(`🤖 ${bot.name} played invalid word: ${word} (-2 points)`);
 
 					// Next turn
 					const newGameState = {
@@ -1077,7 +1084,7 @@ function GameSolo() {
 				// Show alert with bot's move
 				showToast('success', `${bot.name} bermain`, `Kata: ${word.toUpperCase()} (+${word.length} poin)`);
 
-				console.log(`🤖 ${bot.name} played: ${word} (+${word.length} points). Table reset to: ${newRandomFragment}`);
+				devLog(`🤖 ${bot.name} played: ${word} (+${word.length} points). Table reset to: ${newRandomFragment}`);
 
 				// Check if game should end
 				setTimeout(() => {
@@ -1095,13 +1102,13 @@ function GameSolo() {
 			// Show alert for bot skip
 			showToast('info', `${bot.name} skip turn`, '-1 poin', 1500);
 
-			console.log(`🤖 ${bot.name} skipped turn`);
+			devLog(`🤖 ${bot.name} skipped turn`);
 
 			const newSkipCount = consecutiveSkips + 1;
-			console.log(`Bot skip count: ${newSkipCount} / ${gameState.players.length}`);
+			devLog(`Bot skip count: ${newSkipCount} / ${gameState.players.length}`);
 
 			if (newSkipCount >= gameState.players.length) {
-				console.log('All players skipped! Resetting table...');
+				devLog('All players skipped! Resetting table...');
 
 				// Reset table: Only 2 characters, vowel+consonant, not "nd", "ng", "aa"
 				const fragments = [];
@@ -1121,7 +1128,7 @@ function GameSolo() {
 					type: 'BASE_WORD'
 				};
 
-				console.log(`Bot triggered reset. New table card: ${newCard.value}`);
+				devLog(`Bot triggered reset. New table card: ${newCard.value}`);
 
 				const newGameState = {
 					...gameState,
