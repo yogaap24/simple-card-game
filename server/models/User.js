@@ -3,67 +3,67 @@ import bcrypt from 'bcryptjs';
 import { sequelize } from '../config/database.js';
 
 const User = sequelize.define('User', {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true
-  },
-  username: {
-    type: DataTypes.STRING(20),
-    allowNull: false,
-    unique: true,
-    validate: {
-      len: [3, 20]
-    }
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-    validate: {
-      isEmail: true
-    }
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      len: [6, 100]
-    }
-  },
-  gamesPlayed: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
-  },
-  gamesWon: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
-  },
-  totalScore: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
-  }
+	id: {
+		type: DataTypes.UUID,
+		defaultValue: DataTypes.UUIDV4,
+		primaryKey: true
+	},
+	username: {
+		type: DataTypes.STRING(20),
+		allowNull: false,
+		unique: true,
+		validate: {
+			len: [3, 20]
+		}
+	},
+	email: {
+		type: DataTypes.STRING,
+		allowNull: false,
+		unique: true,
+		validate: {
+			isEmail: true
+		}
+	},
+	password: {
+		type: DataTypes.STRING,
+		allowNull: false,
+		validate: {
+			len: [6, 100]
+		}
+	},
+	gamesPlayed: {
+		type: DataTypes.INTEGER,
+		defaultValue: 0
+	},
+	gamesWon: {
+		type: DataTypes.INTEGER,
+		defaultValue: 0
+	},
+	totalScore: {
+		type: DataTypes.INTEGER,
+		defaultValue: 0
+	}
 }, {
-  timestamps: true,
-  hooks: {
-    beforeCreate: async (user) => {
-      if (user.password) {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
-      }
-    },
-    beforeUpdate: async (user) => {
-      if (user.changed('password')) {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
-      }
-    }
-  }
+	timestamps: true,
+	hooks: {
+		beforeCreate: async (user) => {
+			if (user.password) {
+				const salt = await bcrypt.genSalt(10);
+				user.password = await bcrypt.hash(user.password, salt);
+			}
+		},
+		beforeUpdate: async (user) => {
+			if (user.changed('password')) {
+				const salt = await bcrypt.genSalt(10);
+				user.password = await bcrypt.hash(user.password, salt);
+			}
+		}
+	}
 });
 
 // Instance method to compare passwords
-User.prototype.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
+User.prototype.comparePassword = async function (candidatePassword) {
+	return await bcrypt.compare(candidatePassword, this.password);
 };
 
 export default User;

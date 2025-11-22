@@ -5,37 +5,37 @@
 
 // Card Types
 export const CardType = {
-  BASE_WORD: 'BASE_WORD',    // Base word fragments
-  AFFIX: 'AFFIX'             // Prefixes/suffixes (imbuhan)
+	BASE_WORD: 'BASE_WORD',    // Base word fragments
+	AFFIX: 'AFFIX'             // Prefixes/suffixes (imbuhan)
 };
 
 // Game Phases
 export const GamePhase = {
-  WAITING: 'WAITING',        // Waiting for players
-  PLAYING: 'PLAYING',        // Game in progress
-  FINISHED: 'FINISHED'       // Game ended
+	WAITING: 'WAITING',        // Waiting for players
+	PLAYING: 'PLAYING',        // Game in progress
+	FINISHED: 'FINISHED'       // Game ended
 };
 
 // Player Status
 export const PlayerStatus = {
-  NOT_READY: 'NOT_READY',
-  READY: 'READY',
-  PLAYING: 'PLAYING',
-  DISCONNECTED: 'DISCONNECTED'
+	NOT_READY: 'NOT_READY',
+	READY: 'READY',
+	PLAYING: 'PLAYING',
+	DISCONNECTED: 'DISCONNECTED'
 };
 
 // Challenge Status
 export const ChallengeStatus = {
-  PENDING: 'PENDING',
-  ACCEPTED: 'ACCEPTED',
-  REJECTED: 'REJECTED'
+	PENDING: 'PENDING',
+	ACCEPTED: 'ACCEPTED',
+	REJECTED: 'REJECTED'
 };
 
 // Validation Source
 export const ValidationSource = {
-  DICTIONARY: 'DICTIONARY',
-  API: 'API',
-  CHALLENGE: 'CHALLENGE'
+	DICTIONARY: 'DICTIONARY',
+	API: 'API',
+	CHALLENGE: 'CHALLENGE'
 };
 
 /**
@@ -77,10 +77,10 @@ export const ValidationSource = {
  */
 
 export default {
-  CardType,
-  GamePhase,
-  PlayerStatus,
-  ChallengeStatus,
-  ValidationSource
+	CardType,
+	GamePhase,
+	PlayerStatus,
+	ChallengeStatus,
+	ValidationSource
 };
 

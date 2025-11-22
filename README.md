@@ -4,13 +4,10 @@
 
 🤖 **Bot Mode** - Main melawan 3-6 bot dengan tingkat kesulitan mudah, sedang, atau sulit!
 
-**📖 For complete guide, see [GUIDE.md](GUIDE.md)**
-
 ## Tech Stack
 
 - **Backend**: Node.js, Express, Socket.IO, PostgreSQL (Sequelize ORM)
 - **Frontend**: React, Socket.IO Client, Vite
-- **Real-time Communication**: WebSocket (Socket.IO)
 - **Word Validation**: KBBI API (https://kbbi.raf555.dev) + Local Dictionary
 
 ## Features
@@ -19,9 +16,6 @@
 - 🤖 **VS Bot Mode** - Main melawan 3-6 bot pintar
 - 🎯 **3 Tingkat Kesulitan** - Mudah, Sedang, Sulit
 - 📚 **KBBI API Integration** - 100,000+ kata Indonesia
-- 💡 **Educational** - Tampilkan kata turunan dan definisi
-- ⚡ **Fast Setup** - Siap dalam 5 menit
-- 🏆 **Challenge System** - Voting untuk kata yang meragukan
 
 ## Quick Start
 
@@ -50,17 +44,6 @@ Open http://localhost:5173 and play!
 - Tidak perlu menunggu pemain lain
 - Sempurna untuk belajar kata-kata Indonesia
 - Langsung klik "Mulai Main" tanpa login!
-
-## Documentation
-
-**Complete guide:** See [GUIDE.md](GUIDE.md) for:
-- Detailed setup instructions
-- How to play
-- Bot mode details
-- Testing guide
-- Deployment instructions
-- Troubleshooting
-- Development guide
 
 ## Tech Stack
 
