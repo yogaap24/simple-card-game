@@ -2,7 +2,7 @@
 FROM node:20-alpine AS client-build
 WORKDIR /app/client
 COPY client/package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 COPY client/ ./
 # Set server URL to same origin for production (empty = use same origin)
 ENV VITE_SERVER_URL=

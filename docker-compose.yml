@@ -2,15 +2,14 @@ version: '3.8'
 
 services:
   app:
-    image: ${DOCKER_USERNAME}/card-bisindo:latest
-    container_name: bisindo_app
+    image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
+    container_name: ${IMAGE_NAME}
     restart: unless-stopped
     environment:
-      NODE_ENV: ${NODE_ENV}
-      PORT: ${PORT}
-      DATABASE_URL: ${DATABASE_URL}
-      CLIENT_URL: ${CLIENT_URL}
-      JWT_SECRET: ${JWT_SECRET}
+      SERVICE_NAME: ${IMAGE_NAME}
+      SERVICE_TAGS: dev
+    volumes:
+      - ./.env:/var/www/.env
     deploy:
       resources:
         limits:

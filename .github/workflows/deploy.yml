@@ -59,7 +59,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: "docker-compose.yml"
+          source: "docker-compose.yml, .env"
           target: "/root/workspace/card-bisindo"
           rm: false
 
@@ -70,13 +70,15 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
+            export $(cat /root/.env | xargs)
+
             cd /root/workspace/card-bisindo
 
             # Pull latest image
             docker-compose pull app
 
             # Recreate and restart containers
-            docker-compose --env-file .env up -d --force-recreate app
+            docker-compose up -d --force-recreate
 
             # Clean up old images
             docker image prune -f
