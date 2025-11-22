@@ -13,6 +13,31 @@ export class BotPlayer {
 	}
 
 	/**
+	 * Get difficulty-based probabilities
+	 */
+	getProbabilities() {
+		switch (this.difficulty) {
+			case 'easy':
+				return {
+					skip: 0.08,  // 8% chance skip
+					wrong: 0.30  // 30% chance play invalid word (lebih sering salah)
+				};
+			case 'medium':
+				return {
+					skip: 0.05,  // 5% chance skip
+					wrong: 0.15  // 15% chance salah
+				};
+			case 'hard':
+				return {
+					skip: 0.03,  // 3% chance skip
+					wrong: 0.05  // 5% chance salah
+				};
+			default:
+				return { skip: 0.05, wrong: 0.15 };
+		}
+	}
+
+	/**
 	 * Bot decides which cards to play
 	 */
 	async makeMove(hand, tableCards, wordHistory) {
@@ -20,16 +45,59 @@ export class BotPlayer {
 		await this.sleep(1000 + Math.random() * 2000);
 
 		const currentWord = tableCards.map(c => c.value).join('');
+		const probs = this.getProbabilities();
 
 		// Try to find a valid move (single or multiple cards)
 		const possibleMoves = await this.findValidMoves(hand, currentWord, wordHistory);
 
 		if (possibleMoves.length === 0) {
+			return null; // Skip turn (no valid moves)
+		}
+
+		// Probabilitas skip meski ada valid move
+		if (Math.random() < probs.skip) {
 			return null; // Skip turn
+		}
+
+		// Probabilitas main kartu yang salah (invalid word)
+		if (Math.random() < probs.wrong) {
+			const wrongMove = this.makeWrongMove(hand, currentWord, wordHistory);
+			if (wrongMove) return wrongMove;
 		}
 
 		// Choose best move based on difficulty
 		return this.selectMove(possibleMoves);
+	}
+
+	/**
+	 * Make intentionally wrong move (bot salah)
+	 */
+	makeWrongMove(hand, currentWord, wordHistory) {
+		// Randomly pick 1-2 cards
+		const numCards = Math.random() > 0.7 ? 2 : 1;
+		const shuffledHand = [...hand].sort(() => Math.random() - 0.5);
+		const selectedCards = shuffledHand.slice(0, Math.min(numCards, hand.length));
+
+		if (selectedCards.length === 0) return null;
+
+		// Random placement (left or right)
+		const placeLeft = Math.random() > 0.5;
+		const wrongWord = placeLeft
+			? selectedCards.map(c => c.value).join('') + currentWord
+			: currentWord + selectedCards.map(c => c.value).join('');
+
+		// Only return if word not in history (avoid repeat)
+		if (wordHistory.includes(wrongWord.toLowerCase())) {
+			return null;
+		}
+
+		return {
+			leftCards: placeLeft ? selectedCards : [],
+			rightCards: placeLeft ? [] : selectedCards,
+			word: wrongWord.toLowerCase(),
+			score: 0,
+			isWrong: true // Flag untuk tracking
+		};
 	}
 
 	/**

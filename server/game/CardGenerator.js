@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { CardType } from '../../shared/types.js';
-import { GAME_CONFIG, AFFIX_LIST, CARD_COLORS } from '../../shared/constants.js';
+import { GAME_CONFIG, AFFIX_LIST, CARD_COLORS, SYLLABLES, ALPHABET } from '../../shared/constants.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,14 +19,40 @@ try {
 }
 
 /**
- * Generate all possible card segments from base words
+ * Generate all possible card segments:
+ * - 20% chance: 1 huruf (A-Z)
+ * - 80% chance: 2 huruf (SYLLABLES)
+ * - Segments dari base words (1-3 huruf)
  */
 function generateBaseWordCards() {
 	const cards = [];
-	const uniqueSegments = new Set();
+	let cardId = 1;
 
+	// 1. Alfabet (1 huruf) - dari ALPHABET
+	ALPHABET.forEach(letter => {
+		cards.push({
+			id: `alpha-${cardId++}`,
+			type: CardType.BASE_WORD,
+			value: letter.toLowerCase(),
+			color: CARD_COLORS.BASE_WORD,
+			isAlphabet: true
+		});
+	});
+
+	// 2. Syllables (2 huruf) - dari SYLLABLES
+	SYLLABLES.forEach(syllable => {
+		cards.push({
+			id: `syll-${cardId++}`,
+			type: CardType.BASE_WORD,
+			value: syllable.toLowerCase(),
+			color: CARD_COLORS.BASE_WORD,
+			isSyllable: true
+		});
+	});
+
+	// 3. Segments dari base words (1-3 huruf)
+	const uniqueSegments = new Set();
 	baseWords.forEach(word => {
-		// Generate all possible 1-3 character segments
 		for (let i = 0; i < word.length; i++) {
 			for (let len = 1; len <= Math.min(GAME_CONFIG.MAX_CARD_LENGTH, word.length - i); len++) {
 				const segment = word.substring(i, i + len);
@@ -37,8 +63,6 @@ function generateBaseWordCards() {
 		}
 	});
 
-	// Convert segments to card objects
-	let cardId = 1;
 	uniqueSegments.forEach(segment => {
 		cards.push({
 			id: `base-${cardId++}`,
@@ -132,29 +156,50 @@ export function shuffleDeck(deck) {
 }
 
 /**
- * Deal cards to players ensuring no duplicates
+ * Deal cards to players ensuring proper distribution
+ * 20% chance untuk 1 huruf, 80% untuk 2 huruf atau lebih
  */
 export function dealCards(numPlayers, cardsPerPlayer = GAME_CONFIG.STARTING_CARDS) {
 	const deck = shuffleDeck(generateDeck());
 	const playerHands = [];
 
-	// Calculate how many cards we need
-	const totalNeeded = numPlayers * cardsPerPlayer;
+	// Separate cards by type
+	const alphabetCards = deck.filter(card => card.isAlphabet);
+	const otherCards = deck.filter(card => !card.isAlphabet);
 
-	if (totalNeeded > deck.length) {
-		throw new Error(`Not enough cards in deck. Need ${totalNeeded}, have ${deck.length}`);
-	}
-
-	// Deal cards to each player
+	// Deal cards to each player with 20% single letter probability
 	for (let i = 0; i < numPlayers; i++) {
-		const hand = deck.splice(0, cardsPerPlayer);
+		const hand = [];
+
+		for (let j = 0; j < cardsPerPlayer; j++) {
+			const rand = Math.random();
+
+			// 20% chance untuk 1 huruf
+			if (rand < GAME_CONFIG.SINGLE_LETTER_PROBABILITY && alphabetCards.length > 0) {
+				const card = alphabetCards.splice(Math.floor(Math.random() * alphabetCards.length), 1)[0];
+				hand.push(card);
+			}
+			// 80% chance untuk 2+ huruf
+			else if (otherCards.length > 0) {
+				const card = otherCards.splice(Math.floor(Math.random() * otherCards.length), 1)[0];
+				hand.push(card);
+			}
+			// Fallback jika kehabisan
+			else if (alphabetCards.length > 0) {
+				const card = alphabetCards.splice(Math.floor(Math.random() * alphabetCards.length), 1)[0];
+				hand.push(card);
+			}
+		}
+
 		playerHands.push(hand);
 	}
 
-	// Return player hands and remaining deck
+	// Remaining deck
+	const remainingDeck = [...alphabetCards, ...otherCards];
+
 	return {
 		playerHands,
-		remainingDeck: deck
+		remainingDeck: shuffleDeck(remainingDeck)
 	};
 }
 

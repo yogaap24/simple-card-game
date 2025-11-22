@@ -397,19 +397,26 @@ function GameSolo() {
 		}
 
 		if (!isValid) {
-			showToast('error', 'Kata tidak valid', 'Turn berakhir. +1 kartu hukuman', 2500);
+			showToast('error', 'Kata tidak valid', 'Penalty: -2 poin + 1 kartu', 2500);
 
 			// Return cards to hand
 			setPlacedCards([]);
 			setSelectedCard(null);
 
+			// Apply penalty: -2 poin
+			const updatedPlayers = [...gameState.players];
+			updatedPlayers[0].score = Math.max(0, updatedPlayers[0].score - 2);
+
 			// Draw penalty card
 			drawCardToPlayer(0);
+
+			console.log(`❌ Invalid word! ${updatedPlayers[0].username}: -2 poin`);
 
 			// END TURN - move to next player
 			const nextPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
 			setGameState({
 				...gameState,
+				players: updatedPlayers,
 				currentPlayerIndex: nextPlayerIndex
 			});
 

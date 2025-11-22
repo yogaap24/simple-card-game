@@ -188,10 +188,14 @@ export class GameState {
 		const validation = await validateWord(word);
 
 		if (!validation.valid) {
-			// Invalid word - player must draw a card
+			// Invalid word - apply penalty: -2 poin + draw 1 card
+			player.score = Math.max(0, player.score - POINTS.WRONG_CHALLENGE_PENALTY);
+
+			console.log(`❌ Invalid word! ${player.username}: -${POINTS.WRONG_CHALLENGE_PENALTY} poin`);
+
 			return {
 				success: false,
-				message: validation.message || 'Kata tidak valid',
+				message: `Kata tidak valid! Penalty: -${POINTS.WRONG_CHALLENGE_PENALTY} poin + 1 kartu`,
 				mustDraw: true
 			};
 		}
@@ -390,26 +394,37 @@ export class GameState {
 
 		let result;
 		if (wordIsValid) {
-			// Word is valid, challenger was right
-			result = {
-				success: true,
-				wordIsValid: true,
-				message: 'Challenge successful - word is valid'
-			};
-		} else {
-			// Word is invalid, challenger was wrong - apply penalty
-			if (challenger && this.deck.length > 0) {
-				const penaltyCards = Math.min(POINTS.CHALLENGE_PENALTY, this.deck.length);
-				for (let i = 0; i < penaltyCards; i++) {
+			// Word is VALID, challenger was WRONG (challenged a valid word) - apply penalty
+			if (challenger) {
+				const scoreBefore = challenger.score;
+
+				// Penalty 1: -2 poin
+				challenger.score = Math.max(0, challenger.score - POINTS.WRONG_CHALLENGE_PENALTY);
+
+				console.log(`❌ Challenge failed! Word "${this.activeChallenge.word}" is valid. ${challenger.username}: ${scoreBefore} → ${challenger.score} (-${POINTS.WRONG_CHALLENGE_PENALTY} poin)`);
+
+				// Penalty 2: Draw 1 card
+				if (this.deck.length > 0) {
 					this.drawCard(challenger.id);
+					console.log(`  + Draw 1 card (now has ${challenger.hand.length} cards)`);
 				}
 			}
 
 			result = {
 				success: false,
+				wordIsValid: true,
+				message: `Challenge failed - kata valid! Penalty: -${POINTS.WRONG_CHALLENGE_PENALTY} poin + 1 kartu`,
+				penalty: POINTS.WRONG_CHALLENGE_PENALTY,
+				penaltyCards: 1
+			};
+		} else {
+			// Word is INVALID, challenger was RIGHT - challenge successful
+			console.log(`✅ Challenge successful! Word "${this.activeChallenge.word}" is invalid.`);
+
+			result = {
+				success: true,
 				wordIsValid: false,
-				message: 'Challenge failed - penalty applied',
-				penalty: POINTS.CHALLENGE_PENALTY
+				message: 'Challenge berhasil - kata tidak valid!'
 			};
 		}
 

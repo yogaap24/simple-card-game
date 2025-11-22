@@ -36,6 +36,8 @@
 	border: 3px solid #654321;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 	position: relative;
+	max-width: 100%;
+	box-sizing: border-box;
 }
 
 /* Drop zone indicators */
@@ -77,9 +79,36 @@
 .word-display {
 	display: flex;
 	gap: 10px;
-	justify-content: center;
+	justify-content: flex-start;
 	margin-bottom: 20px;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
+	width: 100%;
+	max-width: 100%;
+	overflow-x: auto;
+	overflow-y: visible;
+	padding: 10px 0;
+	-webkit-overflow-scrolling: touch;
+	scroll-behavior: smooth;
+	box-sizing: border-box;
+}
+
+/* Scrollbar styling */
+.word-display::-webkit-scrollbar {
+	height: 8px;
+}
+
+.word-display::-webkit-scrollbar-track {
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 4px;
+}
+
+.word-display::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.3);
+	border-radius: 4px;
+}
+
+.word-display::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.5);
 }
 
 .word-text {
@@ -174,24 +203,65 @@
 }
 
 @media (max-width: 768px) {
-	.word-text .word {
-		font-size: 28px;
+	.table-cards {
+		width: 100%;
+		max-width: 100%;
+		padding: 0 10px;
+		box-sizing: border-box;
 	}
 
 	.table-word {
-		padding: 20px;
+		padding: 15px;
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.word-display {
+		/* FORCE cards to stay inside */
+		padding: 10px 0;
+		gap: 8px;
+		width: 100%;
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+
+	/* Make sure cards don't overflow */
+	.word-display .card {
+		flex-shrink: 0;
+		min-width: 70px;
+		max-width: 80px;
+	}
+
+	.word-text .word {
+		font-size: 18px;
+		word-break: break-word;
+	}
+
+	/* Hide drop zone indicators on mobile */
+	.table-word::before,
+	.table-word::after {
+		display: none;
 	}
 
 	.word-info {
-		padding: 12px;
+		padding: 10px;
+		font-size: 12px;
 	}
 
 	.derived-word {
-		font-size: 12px;
-		padding: 3px 8px;
+		font-size: 10px;
+		padding: 2px 6px;
 	}
 
 	.definition {
+		font-size: 11px;
+	}
+
+	.challenge-btn {
+		padding: 10px 20px;
 		font-size: 13px;
+		width: 100%;
 	}
 }

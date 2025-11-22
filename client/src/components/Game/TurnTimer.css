@@ -8,6 +8,23 @@
 	height: 80px;
 }
 
+/* Mobile: Smaller but always visible */
+@media (max-width: 768px) {
+	.timer-circle {
+		width: 50px;
+		height: 50px;
+	}
+
+	.timer-seconds {
+		font-size: 18px !important;
+		font-weight: 700 !important;
+	}
+
+	.timer-label {
+		font-size: 7px !important;
+	}
+}
+
 .timer-progress {
 	transition: stroke-dashoffset 1s linear;
 }
