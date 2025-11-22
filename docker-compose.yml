@@ -5,11 +5,8 @@ services:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     container_name: ${IMAGE_NAME}
     restart: unless-stopped
-    environment:
-      SERVICE_NAME: ${IMAGE_NAME}
-      SERVICE_TAGS: dev
-    volumes:
-      - ./.env:/var/www/.env
+    env_file:
+      - .env
     deploy:
       resources:
         limits:
