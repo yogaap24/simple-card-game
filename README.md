@@ -51,6 +51,29 @@ Open http://localhost:5173 and play!
 - **Frontend**: React, Vite, Socket.IO Client
 - **Database**: PostgreSQL (Sequelize ORM)
 - **API**: KBBI Dictionary API
+- **Deployment**: Docker, Docker Compose, GitHub Actions
+
+## 🚀 Deployment
+
+Project ini sudah dilengkapi dengan:
+- ✅ Multi-stage Dockerfile (React + Node.js)
+- ✅ Docker Compose (pakai PostgreSQL external)
+- ✅ CI/CD GitHub Actions
+- ✅ Traefik reverse proxy ready
+
+**Quick Deploy:**
+```bash
+# 1. Generate secrets
+node generate-secrets.js
+
+# 2. Setup GitHub Secrets & VPS .env
+# See SETUP.md for details
+
+# 3. Deploy
+git push origin master
+```
+
+Lihat **[SETUP.md](./SETUP.md)** untuk panduan lengkap.
 
 ## License
 

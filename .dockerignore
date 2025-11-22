@@ -1,0 +1,50 @@
+# Node modules
+**/node_modules
+**/npm-debug.log
+
+# Git
+.git
+.gitignore
+
+# Environment files
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Development files
+**/README.md
+**/GUIDE.md
+verify-setup.js
+
+# Client dev files
+client/src
+client/*.config.js
+client/index.html
+
+# Build artifacts (will be copied from build stage)
+client/dist
+
+# Server dev files
+server/nodemon.json
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Testing
+*.test.js
+*.spec.js
+coverage/
+.nyc_output/
+

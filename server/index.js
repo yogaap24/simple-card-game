@@ -3,9 +3,14 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { connectDB } from './config/database.js';
 import authRoutes from './routes/auth.js';
 import { setupSocketHandlers } from './socket/gameSocket.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables
 dotenv.config();
@@ -86,6 +91,19 @@ app.get('/api/validate/:word', async (req, res) => {
 
 // Setup Socket.IO handlers
 setupSocketHandlers(io);
+
+// Serve static files from React build in production
+if (process.env.NODE_ENV === 'production') {
+	const clientBuildPath = path.join(__dirname, '../client/dist');
+	app.use(express.static(clientBuildPath));
+
+	// Handle React routing - serve index.html for all non-API routes
+	app.get('*', (req, res) => {
+		if (!req.path.startsWith('/api')) {
+			res.sendFile(path.join(clientBuildPath, 'index.html'));
+		}
+	});
+}
 
 // Start server
 const PORT = process.env.PORT || 5000;

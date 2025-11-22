@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  app:
+    image: ${DOCKER_USERNAME}/card-bisindo:latest
+    container_name: bisindo_app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
+      DATABASE_URL: ${DATABASE_URL}
+      CLIENT_URL: ${CLIENT_URL}
+      JWT_SECRET: ${JWT_SECRET}
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bisindo.rule=Host(`card-bisindo.${APP_HOST}`)"
+      - "traefik.http.routers.bisindo.entrypoints=web"
+      - "traefik.http.middlewares.bisindo-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.bisindo.middlewares=bisindo-https-redirect"
+      - "traefik.http.routers.bisindo-secure.rule=Host(`card-bisindo.${APP_HOST}`)"
+      - "traefik.http.routers.bisindo-secure.entrypoints=websecure"
+      - "traefik.http.routers.bisindo-secure.tls=true"
+      - "traefik.http.routers.bisindo-secure.tls.certresolver=http"
+      - "traefik.http.routers.bisindo-secure.service=bisindo"
+      - "traefik.http.services.bisindo.loadbalancer.server.port=5000"
+      - "traefik.docker.network=proxy"
+
+    networks:
+      - database-network
+      - proxy
+
+networks:
+  database-network:
+    external: true
+  proxy:
+    external: true
+

@@ -11,7 +11,12 @@ export const SocketProvider = ({ children }) => {
 
 	useEffect(() => {
 		// Initialize socket connection
-		const newSocket = io(import.meta.env.VITE_SERVER_URL || 'http://localhost:5000', {
+		// In production (built), VITE_SERVER_URL will be empty, so use same origin
+		// In development, use localhost:5000
+		const serverUrl = import.meta.env.VITE_SERVER_URL ||
+			(import.meta.env.DEV ? 'http://localhost:5000' : window.location.origin);
+
+		const newSocket = io(serverUrl, {
 			autoConnect: true,
 			reconnection: true,
 			reconnectionDelay: 1000,
