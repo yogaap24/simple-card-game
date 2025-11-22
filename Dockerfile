@@ -1,11 +1,14 @@
 # Stage 1: Build React Client
 FROM node:20-alpine AS client-build
 WORKDIR /app/client
+
+# Build argument for server URL
+ARG VITE_SERVER_URL=https://card-bisindo.yoo.ga
+ENV VITE_SERVER_URL=${VITE_SERVER_URL}
+
 COPY client/package*.json ./
 RUN npm ci
 COPY client/ ./
-# Set server URL to same origin for production (empty = use same origin)
-ENV VITE_SERVER_URL=
 RUN npm run build
 
 # Stage 2: Setup Server

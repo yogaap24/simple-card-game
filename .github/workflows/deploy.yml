@@ -34,6 +34,8 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/card-bisindo:latest
+          build-args: |
+            VITE_SERVER_URL=https://card-bisindo.yoo.ga
           cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/card-bisindo:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/card-bisindo:buildcache,mode=max
 
