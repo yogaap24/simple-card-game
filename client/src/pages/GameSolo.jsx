@@ -27,7 +27,7 @@ function GameSolo() {
 	const isInitializedRef = useRef(false); // Prevent double initialization
 	const isMountedRef = useRef(true); // Track if component is still mounted
 
-	// Helper for toast - with mounted check
+	// Helper for toast - with mounted check (RESPONSIVE)
 	const showToast = (icon, title, text, timer = 2000) => {
 		// ONLY show toast if component is still mounted
 		if (!isMountedRef.current) {
@@ -36,18 +36,30 @@ function GameSolo() {
 		}
 
 		console.log('✅ Showing toast:', title, 'isMounted:', isMountedRef.current);
+
+		// Responsive width based on screen size
+		const isMobile = window.innerWidth <= 768;
+		const toastWidth = isMobile ? '90%' : '350px';
+		const fontSize = isMobile ? '0.875rem' : '1rem';
+
 		Swal.fire({
 			icon,
 			title,
 			text,
-			position: 'top-end',
+			position: isMobile ? 'top' : 'top-end',
 			showConfirmButton: false,
 			timer,
 			timerProgressBar: true,
 			toast: true,
-			width: '350px',
+			width: toastWidth,
 			customClass: {
-				popup: 'swal-toast'
+				popup: 'swal-toast-responsive'
+			},
+			didOpen: (popup) => {
+				popup.style.fontSize = fontSize;
+				if (isMobile) {
+					popup.style.margin = '0.5rem auto';
+				}
 			}
 		});
 	};
@@ -318,7 +330,9 @@ function GameSolo() {
 	};
 
 	const handleBackToHome = async () => {
-		// Show confirmation dialog
+		// Show confirmation dialog (RESPONSIVE)
+		const isMobile = window.innerWidth <= 768;
+
 		const result = await Swal.fire({
 			title: 'Keluar dari Room?',
 			text: 'Permainan akan berakhir dan progress tidak akan disimpan.',
@@ -327,7 +341,30 @@ function GameSolo() {
 			confirmButtonText: 'Ya, Keluar',
 			cancelButtonText: 'Batal',
 			confirmButtonColor: '#ef4444',
-			cancelButtonColor: '#6b7280'
+			cancelButtonColor: '#6b7280',
+			width: isMobile ? '90%' : '400px',
+			customClass: {
+				popup: 'swal-confirm-responsive',
+				title: 'swal-title-responsive',
+				htmlContainer: 'swal-text-responsive',
+				actions: 'swal-actions-responsive'
+			},
+			buttonsStyling: true,
+			didOpen: (popup) => {
+				if (isMobile) {
+					// Mobile styling
+					const title = popup.querySelector('.swal2-title');
+					const text = popup.querySelector('.swal2-html-container');
+					const buttons = popup.querySelectorAll('.swal2-styled');
+
+					if (title) title.style.fontSize = '1.25rem';
+					if (text) text.style.fontSize = '0.875rem';
+					buttons.forEach(btn => {
+						btn.style.fontSize = '0.875rem';
+						btn.style.padding = '0.5rem 1rem';
+					});
+				}
+			}
 		});
 
 		// If user cancels, do nothing
@@ -353,20 +390,29 @@ function GameSolo() {
 		// Navigate away
 		navigate('/');
 
-		// Show exit toast on Home (after navigation)
+		// Show exit toast on Home (after navigation) - RESPONSIVE
 		setTimeout(() => {
+			const toastWidth = isMobile ? '90%' : '350px';
+			const fontSize = isMobile ? '0.875rem' : '1rem';
+
 			Swal.fire({
 				icon: 'info',
 				title: 'Keluar dari Room',
 				text: 'Anda telah keluar dari permainan',
-				position: 'top-end',
+				position: isMobile ? 'top' : 'top-end',
 				showConfirmButton: false,
 				timer: 2000,
 				timerProgressBar: true,
 				toast: true,
-				width: '350px',
+				width: toastWidth,
 				customClass: {
 					popup: 'home-toast'
+				},
+				didOpen: (popup) => {
+					popup.style.fontSize = fontSize;
+					if (isMobile) {
+						popup.style.margin = '0.5rem auto';
+					}
 				}
 			});
 		}, 100);
@@ -1247,22 +1293,15 @@ function GameSolo() {
 	return (
 		<div className="game-page">
 			<div className="game-header">
-				<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-					<h1>Card Game BISINDO</h1>
-					<span style={{
-						backgroundColor: '#4f46e5',
-						color: 'white',
-						padding: '0.25rem 0.75rem',
-						borderRadius: '0.5rem',
-						fontSize: '0.875rem',
-						fontWeight: 'bold'
-					}}>
+				<h3 className="game-title-header">Card Game BISINDO</h3>
+				<div className="game-header-row">
+					<span className="room-code-badge">
 						Room: {roomCode}
 					</span>
+					<button className="btn-secondary btn-exit-room" onClick={handleBackToHome}>
+						Keluar Room
+					</button>
 				</div>
-				<button className="btn-secondary" onClick={handleBackToHome}>
-					Keluar Room
-				</button>
 			</div>
 
 			<div className="game-container">

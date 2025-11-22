@@ -1,5 +1,93 @@
 /* GameSolo specific styles */
 
+/* Top header - DESKTOP: Single row, MOBILE: Two rows */
+.game-header {
+	display: flex;
+	flex-direction: row; /* Desktop: horizontal */
+	justify-content: space-between;
+	align-items: center;
+	padding: 1rem;
+	background-color: var(--color-bg-secondary);
+	border-radius: 8px;
+	margin-bottom: 1rem;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+/* Title */
+.game-title-header {
+	font-size: 1.25rem;
+	margin: 0;
+	font-weight: 600;
+}
+
+/* Desktop: Room Badge and Button in same row as title */
+.game-header-row {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+/* Room Code Badge - SAME SIZE as button */
+.room-code-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #4f46e5;
+	color: white;
+	padding: 0.5rem 1rem;
+	border-radius: 6px;
+	font-size: 0.875rem;
+	font-weight: 600;
+	white-space: nowrap;
+	height: 38px; /* Same as button */
+	box-sizing: border-box;
+}
+
+/* Exit Room Button - CONSISTENT SIZE */
+.btn-exit-room {
+	padding: 0.5rem 1rem;
+	font-size: 0.875rem;
+	white-space: nowrap;
+	height: 38px;
+	box-sizing: border-box;
+}
+
+/* Responsive header - MOBILE: TWO ROWS LAYOUT */
+@media (max-width: 512px) {
+	.game-header {
+		flex-direction: column; /* Mobile: vertical stacking */
+		align-items: stretch;
+		padding: 0.75rem;
+		gap: 0.75rem;
+	}
+
+	.game-title-header {
+		font-size: 1.125rem; /* 18px */
+		text-align: center;
+		width: 100%;
+	}
+
+	.game-header-row {
+		width: 100%;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	/* Keep button and badge same size on mobile */
+	.room-code-badge {
+		padding: 0.5rem 1rem;
+		font-size: 0.875rem;
+		height: 38px;
+	}
+
+	.btn-exit-room {
+		padding: 0.5rem 1rem;
+		font-size: 0.875rem;
+		height: 38px;
+	}
+}
+
 .game-header-solo {
 	display: flex;
 	justify-content: space-between;
@@ -16,6 +104,12 @@
 	font-size: 20px;
 }
 
+@media (max-width: 768px) {
+	.player-turn-info h3 {
+		font-size: 1rem;
+	}
+}
+
 .timer-display {
 	display: flex;
 	align-items: center;
@@ -25,12 +119,20 @@
 .timer-value {
 	font-size: 32px;
 	font-weight: bold;
-	color: var(--color-bg-tertiary); 
+	color: var(--color-bg-tertiary);
 	background-color: var(--color-primary);
 	padding: 10px 20px;
 	border-radius: 8px;
 	min-width: 80px;
 	text-align: center;
+}
+
+@media (max-width: 768px) {
+	.timer-value {
+		font-size: 1.25rem;
+		padding: 0.5rem 1rem;
+		min-width: 60px;
+	}
 }
 
 .action-buttons-solo {
@@ -351,6 +453,54 @@
 	color: var(--color-primary);
 	min-width: 80px;
 	text-align: right;
+}
+
+/* ===== SWEETALERT2 RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+	/* Toast responsive */
+	.swal-toast-responsive {
+		max-width: 90% !important;
+		font-size: 0.875rem !important;
+	}
+
+	.swal-toast-responsive .swal2-title {
+		font-size: 1rem !important;
+	}
+
+	.swal-toast-responsive .swal2-html-container {
+		font-size: 0.875rem !important;
+	}
+
+	/* Confirmation dialog responsive */
+	.swal-confirm-responsive {
+		max-width: 90% !important;
+		padding: 1rem !important;
+	}
+
+	.swal-title-responsive {
+		font-size: 1.25rem !important;
+	}
+
+	.swal-text-responsive {
+		font-size: 0.875rem !important;
+	}
+
+	.swal-actions-responsive {
+		gap: 0.5rem !important;
+		flex-direction: column !important;
+	}
+
+	.swal-actions-responsive button {
+		width: 100% !important;
+		font-size: 0.875rem !important;
+		padding: 0.75rem !important;
+	}
+
+	/* Home toast */
+	.home-toast {
+		max-width: 90% !important;
+		font-size: 0.875rem !important;
+	}
 }
 
 @media (max-width: 768px) {

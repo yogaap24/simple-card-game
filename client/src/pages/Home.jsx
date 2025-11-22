@@ -3,21 +3,31 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import './Home.css';
 
-// Helper for consistent SweetAlert toast notifications (top-right, small)
+// Helper for consistent SweetAlert toast notifications (RESPONSIVE)
 // Only for Home page - game toasts won't appear here
 const showToast = (icon, title, text, timer = 2000) => {
+	const isMobile = window.innerWidth <= 768;
+	const toastWidth = isMobile ? '90%' : '350px';
+	const fontSize = isMobile ? '0.875rem' : '1rem';
+
 	Swal.fire({
 		icon,
 		title,
 		text,
-		position: 'top-end',
+		position: isMobile ? 'top' : 'top-end',
 		showConfirmButton: false,
 		timer,
 		timerProgressBar: true,
 		toast: true,
-		width: '350px',
+		width: toastWidth,
 		customClass: {
 			popup: 'home-toast' // Unique identifier for Home toasts
+		},
+		didOpen: (popup) => {
+			popup.style.fontSize = fontSize;
+			if (isMobile) {
+				popup.style.margin = '0.5rem auto';
+			}
 		}
 	});
 };
