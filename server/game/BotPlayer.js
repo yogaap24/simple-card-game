@@ -32,8 +32,6 @@ export class BotPlayer {
 					skip: 0.03,  // 3% chance skip
 					wrong: 0.05  // 5% chance salah
 				};
-			default:
-				return { skip: 0.05, wrong: 0.15 };
 		}
 	}
 

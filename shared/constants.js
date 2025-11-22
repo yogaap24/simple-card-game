@@ -17,7 +17,6 @@ export const GAME_CONFIG = {
 export const POINTS = {
 	// Points calculated by word length
 	PER_CHARACTER: 1,
-	CHALLENGE_PENALTY: 2,
 	WRONG_CHALLENGE_PENALTY: 2, // -2 poin jika challenge salah
 };
 

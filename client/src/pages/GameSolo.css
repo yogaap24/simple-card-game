@@ -25,8 +25,8 @@
 .timer-value {
 	font-size: 32px;
 	font-weight: bold;
-	color: var(--color-primary);
-	background-color: var(--color-bg-tertiary);
+	color: var(--color-bg-tertiary); 
+	background-color: var(--color-primary);
 	padding: 10px 20px;
 	border-radius: 8px;
 	min-width: 80px;
@@ -70,6 +70,25 @@
 	justify-content: center;
 	flex-wrap: nowrap;
 	gap: 0;
+}
+
+/* Scrollbar styling untuk horizontal scroll */
+.cards-display::-webkit-scrollbar {
+	height: 8px;
+}
+
+.cards-display::-webkit-scrollbar-track {
+	background: rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
+}
+
+.cards-display::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.4);
+	border-radius: 4px;
+}
+
+.cards-display::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.6);
 }
 
 .card-slot {
@@ -340,11 +359,61 @@
 		gap: 15px;
 	}
 
+	/* Timer pojok kanan atas, fixed */
+	.timer-display {
+		position: fixed !important;
+		top: 10px;
+		right: 10px;
+		z-index: 1001;
+	}
+
+	.timer-value {
+		font-size: 20px;
+		padding: 5px 10px;
+		min-width: 50px;
+	}
+
 	.action-buttons-solo {
 		flex-direction: column;
 	}
 
 	.action-buttons-solo button {
 		width: 100%;
+	}
+
+	/* Meja: kartu TIDAK boleh keluar */
+	.play-area {
+		padding: 15px;
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.cards-display {
+		width: 100%;
+		max-width: 100%;
+		overflow-x: auto;
+		overflow-y: hidden;
+		padding: 5px 0;
+		-webkit-overflow-scrolling: touch;
+		scroll-behavior: smooth;
+		gap: 8px;
+	}
+
+	.card-slot {
+		flex-shrink: 0;
+		width: 60px;
+		height: 100px;
+	}
+
+	.game-card {
+		width: 60px !important;
+		height: 100px !important;
+		flex-shrink: 0;
+	}
+
+	.card-value {
+		font-size: 18px !important;
 	}
 }

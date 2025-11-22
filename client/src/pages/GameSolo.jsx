@@ -133,15 +133,20 @@ function GameSolo() {
 			});
 		}
 
+		// Random starting player
+		const randomStartIndex = Math.floor(Math.random() * players.length);
+
 		// Create initial game state
 		const initialState = {
 			players,
-			currentPlayerIndex: 0,
+			currentPlayerIndex: randomStartIndex,
 			tableCards: [],
 			currentWord: '',
 			phase: 'WAITING',
 			difficulty: config.difficulty
 		};
+
+		console.log(`🎲 Random start: ${players[randomStartIndex].name} goes first!`);
 
 		setGameState(initialState);
 		setLoading(false);
@@ -403,9 +408,9 @@ function GameSolo() {
 			setPlacedCards([]);
 			setSelectedCard(null);
 
-			// Apply penalty: -2 poin
+			// Apply penalty: -2 poin (bisa jadi minus!)
 			const updatedPlayers = [...gameState.players];
-			updatedPlayers[0].score = Math.max(0, updatedPlayers[0].score - 2);
+			updatedPlayers[0].score = updatedPlayers[0].score - 2;
 
 			// Draw penalty card
 			drawCardToPlayer(0);
@@ -581,10 +586,8 @@ function GameSolo() {
 		// Deduct 1 point if player has points
 		const updatedPlayers = [...gameState.players];
 		const playerName = updatedPlayers[0].name;
-		const hadPoints = updatedPlayers[0].score > 0;
-		if (updatedPlayers[0].score > 0) {
-			updatedPlayers[0].score = Math.max(0, updatedPlayers[0].score - 1);
-		}
+		// -1 poin (bisa jadi minus!)
+		updatedPlayers[0].score = updatedPlayers[0].score - 1;
 
 		const newSkipCount = consecutiveSkips + 1;
 		console.log(`Skip count: ${newSkipCount} / ${gameState.players.length}`);
@@ -771,27 +774,27 @@ function GameSolo() {
 		let skipChance = 0; // Default 0%
 
 		if (difficulty === 'easy') {
-			// Easy: Validation 40%, Skip 60%
-			cardsToTry = hand.slice(0, Math.min(2, hand.length)); // Only 2 cards
-			positionsToTry = [0]; // Only try at the beginning
-			validationRate = 0.4;
-			skipChance = 0.6;
+			// Easy: Sering main asal (60% salah), jarang skip (5%)
+			cardsToTry = hand.slice(0, Math.min(3, hand.length));
+			positionsToTry = [0, tableCards.length]; // Start or end only
+			validationRate = 0.35; // 35% try valid, 65% main asal salah!
+			skipChance = 0.05; // 5% skip if found valid
 		} else if (difficulty === 'medium') {
-			// Medium: Validation 60%, Skip 40%
-			cardsToTry = hand.slice(0, Math.min(5, hand.length)); // 5 cards
+			// Medium: Kadang main asal (30% salah), jarang skip (3%)
+			cardsToTry = hand.slice(0, Math.min(5, hand.length));
 			for (let i = 0; i <= tableCards.length; i++) {
 				positionsToTry.push(i);
 			}
-			validationRate = 0.6;
-			skipChance = 0.4;
+			validationRate = 0.70; // 70% try valid, 30% main asal salah
+			skipChance = 0.03; // 3% skip if found valid
 		} else {
-			// Hard: Validation 90%, Skip 10%
-			cardsToTry = hand; // All cards
+			// Hard: Jarang main asal (10% salah), jarang skip (2%)
+			cardsToTry = hand;
 			for (let i = 0; i <= tableCards.length; i++) {
 				positionsToTry.push(i);
 			}
-			validationRate = 0.9;
-			skipChance = 0.1;
+			validationRate = 0.90; // 90% try valid, 10% main asal salah
+			skipChance = 0.02; // 2% skip if found valid
 		}
 
 		// Try cards and positions based on difficulty
@@ -829,6 +832,27 @@ function GameSolo() {
 			bestMove = null; // Force skip
 		}
 
+		// If no valid move found, bot should try invalid word instead of skip
+		if (!bestMove && hand.length > 0) {
+			// Bot plays random invalid word (instead of always skipping)
+			// Based on difficulty: easy=70% invalid, medium=40% invalid, hard=15% invalid
+			const invalidPlayChance = difficulty === 'easy' ? 0.70 : difficulty === 'medium' ? 0.40 : 0.15;
+
+			if (Math.random() < invalidPlayChance) {
+				// Pick random card and position
+				const randomCard = hand[Math.floor(Math.random() * hand.length)];
+				const randomPosition = Math.random() > 0.5 ? 0 : tableCards.length;
+
+				bestMove = {
+					card: randomCard,
+					slotIndex: randomPosition,
+					isInvalid: true // Flag this as intentionally invalid
+				};
+
+				console.log(`🤖 ${bot.name} will try invalid word (random play)`);
+			}
+		}
+
 		if (bestMove) {
 			// Visual bot move: Show card being placed
 			setIsBotMoving(true);
@@ -846,15 +870,49 @@ function GameSolo() {
 				const updatedPlayers = [...gameState.players];
 				const botIndex = gameState.currentPlayerIndex;
 
-				// Remove card from bot hand
+				// Build word first
+				const newTableCards = [...tableCards];
+				newTableCards.splice(bestMove.slotIndex, 0, bestMove.card);
+				const word = newTableCards.map(c => c.value).join('');
+
+				// Validate word if this is potentially invalid move
+				let isValid = true;
+				if (bestMove.isInvalid || !wordHistory.includes(word)) {
+					isValid = await quickValidateWord(word);
+				}
+
+				if (!isValid) {
+					// Invalid word! Bot gets penalty
+					updatedPlayers[botIndex].score -= 2; // -2 poin (bisa minus!)
+
+					// Don't remove card from hand (card returns)
+					// Clear bot placed cards
+					setBotPlacedCards([]);
+					setIsBotMoving(false);
+
+					showToast('error', `${bot.name} salah!`, `Kata ${word.toUpperCase()} tidak valid. -2 poin`, 2000);
+					console.log(`🤖 ${bot.name} played invalid word: ${word} (-2 points)`);
+
+					// Next turn
+					const newGameState = {
+						...gameState,
+						players: updatedPlayers,
+						currentPlayerIndex: (gameState.currentPlayerIndex + 1) % gameState.players.length
+					};
+					setGameState(newGameState);
+
+					setTimeout(() => {
+						checkGameEnd(updatedPlayers);
+					}, 100);
+					return;
+				}
+
+				// Valid word! Remove card from bot hand
 				updatedPlayers[botIndex].hand = updatedPlayers[botIndex].hand.filter(
 					c => c.id !== bestMove.card.id
 				);
 
-				// Build word for scoring
-				const newTableCards = [...tableCards];
-				newTableCards.splice(bestMove.slotIndex, 0, bestMove.card);
-				const word = newTableCards.map(c => c.value).join('');
+				// Add score
 				updatedPlayers[botIndex].score += word.length;
 
 				setWordHistory([...wordHistory, word]);
@@ -908,14 +966,11 @@ function GameSolo() {
 			const updatedPlayers = [...gameState.players];
 			const botIndex = gameState.currentPlayerIndex;
 
-			// Deduct 1 point if bot has points
-			const hadPoints = updatedPlayers[botIndex].score > 0;
-			if (updatedPlayers[botIndex].score > 0) {
-				updatedPlayers[botIndex].score = Math.max(0, updatedPlayers[botIndex].score - 1);
-			}
+			// Deduct 1 point (bisa jadi minus!)
+			updatedPlayers[botIndex].score = updatedPlayers[botIndex].score - 1;
 
 			// Show alert for bot skip
-			showToast('info', `${bot.name} skip turn`, hadPoints ? '-1 poin' : '', 1500);
+			showToast('info', `${bot.name} skip turn`, '-1 poin', 1500);
 
 			console.log(`🤖 ${bot.name} skipped turn`);
 
