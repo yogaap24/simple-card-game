@@ -15,14 +15,11 @@
 **/README.md
 **/GUIDE.md
 verify-setup.js
+generate-secrets.js
+test-docker.sh
 
-# Client dev files
-client/src
-client/*.config.js
-client/index.html
-
-# Build artifacts (will be copied from build stage)
-client/dist
+# Build artifacts (already built in stages)
+**/dist
 
 # Server dev files
 server/nodemon.json
