@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSocket } from '../context/SocketContext';
 
 export const useGame = () => {
@@ -6,6 +6,8 @@ export const useGame = () => {
 	const [gameState, setGameState] = useState(null);
 	const [error, setError] = useState(null);
 	const [notification, setNotification] = useState(null);
+	const errorTimeoutRef = useRef(null);
+	const invalidMoveTimeoutRef = useRef(null);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -46,12 +48,26 @@ export const useGame = () => {
 
 		const handleError = (data) => {
 			setError(data.message);
-			setTimeout(() => setError(null), 5000);
+
+			// Clear previous timeout
+			if (errorTimeoutRef.current) {
+				clearTimeout(errorTimeoutRef.current);
+			}
+
+			// Set new timeout
+			errorTimeoutRef.current = setTimeout(() => setError(null), 5000);
 		};
 
 		const handleInvalidMove = (data) => {
 			setError(data.message);
-			setTimeout(() => setError(null), 5000);
+
+			// Clear previous timeout
+			if (invalidMoveTimeoutRef.current) {
+				clearTimeout(invalidMoveTimeoutRef.current);
+			}
+
+			// Set new timeout
+			invalidMoveTimeoutRef.current = setTimeout(() => setError(null), 5000);
 		};
 
 		// Register event listeners
@@ -76,6 +92,14 @@ export const useGame = () => {
 			off(SERVER_EVENTS.TURN_CHANGED, handleTurnChanged);
 			off(SERVER_EVENTS.ERROR, handleError);
 			off(SERVER_EVENTS.INVALID_MOVE, handleInvalidMove);
+
+			// Clear all timeouts
+			if (errorTimeoutRef.current) {
+				clearTimeout(errorTimeoutRef.current);
+			}
+			if (invalidMoveTimeoutRef.current) {
+				clearTimeout(invalidMoveTimeoutRef.current);
+			}
 		};
 	}, [socket]);
 

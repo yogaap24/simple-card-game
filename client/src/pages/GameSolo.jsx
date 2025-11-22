@@ -1,30 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { BASE_WORDS, AFFIXES, isCompleteWord, isValidTableFragment } from '../data/words';
 import './Game.css';
 import './GameSolo.css';
 
-// Helper for consistent SweetAlert toast notifications (top-right, small)
-const showToast = (icon, title, text, timer = 2000) => {
-	Swal.fire({
-		icon,
-		title,
-		text,
-		position: 'top-end',
-		showConfirmButton: false,
-		timer,
-		timerProgressBar: true,
-		toast: true,
-		width: '350px',
-		customClass: {
-			popup: 'swal-toast'
-		}
-	});
-};
-
 function GameSolo() {
 	const navigate = useNavigate();
+	const { roomCode } = useParams();
 	const [gameConfig, setGameConfig] = useState(null);
 	const [gameState, setGameState] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -41,8 +24,42 @@ function GameSolo() {
 	const [isBotMoving, setIsBotMoving] = useState(false);
 	const botTurnTimeoutRef = useRef(null);
 	const timerRef = useRef(null);
+	const isInitializedRef = useRef(false); // Prevent double initialization
+	const isMountedRef = useRef(true); // Track if component is still mounted
+
+	// Helper for toast - with mounted check
+	const showToast = (icon, title, text, timer = 2000) => {
+		// ONLY show toast if component is still mounted
+		if (!isMountedRef.current) {
+			console.log('🚫 Toast blocked - component unmounted:', title);
+			return;
+		}
+
+		console.log('✅ Showing toast:', title, 'isMounted:', isMountedRef.current);
+		Swal.fire({
+			icon,
+			title,
+			text,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer,
+			timerProgressBar: true,
+			toast: true,
+			width: '350px',
+			customClass: {
+				popup: 'swal-toast'
+			}
+		});
+	};
 
 	useEffect(() => {
+		// ALWAYS set mounted to true on mount (fixes StrictMode double mount issue)
+		isMountedRef.current = true;
+
+		// Prevent double initialization
+		if (isInitializedRef.current) return;
+		isInitializedRef.current = true;
+
 		// Load game config
 		const configStr = sessionStorage.getItem('gameConfig');
 		if (!configStr) {
@@ -61,7 +78,17 @@ function GameSolo() {
 
 		// Initialize game
 		initializeGame(config);
-	}, [navigate]);
+
+		// Cleanup on unmount
+		return () => {
+			console.log('🔴 GameSolo unmounting - setting isMountedRef to false');
+			isMountedRef.current = false;
+			if (timerRef.current) clearInterval(timerRef.current);
+			if (botTurnTimeoutRef.current) clearTimeout(botTurnTimeoutRef.current);
+			Swal.close();
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	// Timer effect
 	useEffect(() => {
@@ -153,11 +180,13 @@ function GameSolo() {
 
 		// Auto start after 1 second
 		setTimeout(() => {
+			console.log('⏰ Starting game now...');
 			startGame(initialState);
 		}, 1000);
 	};
 
 	const startGame = (state) => {
+		console.log('✅ startGame called! Changing phase from WAITING to PLAYING');
 		// Use imported dictionary
 		const baseWords = BASE_WORDS;
 		const affixes = AFFIXES;
@@ -189,6 +218,7 @@ function GameSolo() {
 			type: 'BASE_WORD'
 		};
 
+		console.log('🎮 Setting gameState to PLAYING with table card:', randomFragment);
 		setGameState({
 			...state,
 			players: updatedPlayers,
@@ -196,6 +226,7 @@ function GameSolo() {
 			currentWord: firstCard.value,
 			phase: 'PLAYING'
 		});
+		console.log('✅ setGameState called - phase should now be PLAYING');
 	};
 
 	const generateHand = (count, fragments, affixes) => {
@@ -286,13 +317,59 @@ function GameSolo() {
 		return hand;
 	};
 
-	const handleBackToHome = () => {
+	const handleBackToHome = async () => {
+		// Show confirmation dialog
+		const result = await Swal.fire({
+			title: 'Keluar dari Room?',
+			text: 'Permainan akan berakhir dan progress tidak akan disimpan.',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Ya, Keluar',
+			cancelButtonText: 'Batal',
+			confirmButtonColor: '#ef4444',
+			cancelButtonColor: '#6b7280'
+		});
+
+		// If user cancels, do nothing
+		if (!result.isConfirmed) {
+			return;
+		}
+
+		// User confirmed exit - shutdown everything
+		isMountedRef.current = false;
+
+		// Clear all timers and timeouts
 		if (timerRef.current) clearInterval(timerRef.current);
 		if (botTurnTimeoutRef.current) clearTimeout(botTurnTimeoutRef.current);
+
+		// Close any open toasts (ini akan stop semua toast yang muncul)
+		Swal.close();
+
+		// Clear state
 		setPlacedCards([]);
 		setSelectedCard(null);
 		sessionStorage.removeItem('gameConfig');
+
+		// Navigate away
 		navigate('/');
+
+		// Show exit toast on Home (after navigation)
+		setTimeout(() => {
+			Swal.fire({
+				icon: 'info',
+				title: 'Keluar dari Room',
+				text: 'Anda telah keluar dari permainan',
+				position: 'top-end',
+				showConfirmButton: false,
+				timer: 2000,
+				timerProgressBar: true,
+				toast: true,
+				width: '350px',
+				customClass: {
+					popup: 'home-toast'
+				}
+			});
+		}, 100);
 	};
 
 	const handleCardClick = (card) => {
@@ -583,17 +660,16 @@ function GameSolo() {
 		setPlacedCards([]);
 		setSelectedCard(null);
 
-		// Deduct 1 point if player has points
+		// Deduct 1 point (bisa jadi minus!)
 		const updatedPlayers = [...gameState.players];
 		const playerName = updatedPlayers[0].name;
-		// -1 poin (bisa jadi minus!)
 		updatedPlayers[0].score = updatedPlayers[0].score - 1;
 
 		const newSkipCount = consecutiveSkips + 1;
 		console.log(`Skip count: ${newSkipCount} / ${gameState.players.length}`);
 
 		// Show alert for skip
-		showToast('info', `${playerName} skip turn`, hadPoints ? '-1 poin' : '', 1500);
+		showToast('info', `${playerName} skip turn`, '-1 poin', 1500);
 
 		// Check if all players skipped
 		if (newSkipCount >= gameState.players.length) {
@@ -733,7 +809,7 @@ function GameSolo() {
 
 	// Bot AI logic
 	useEffect(() => {
-		if (!gameState || gameState.phase !== 'PLAYING') return;
+		if (!gameState || gameState.phase !== 'PLAYING' || !gameConfig) return;
 
 		const currentPlayer = gameState.players[gameState.currentPlayerIndex];
 		if (!currentPlayer || !currentPlayer.isBot) return;
@@ -756,7 +832,8 @@ function GameSolo() {
 				clearTimeout(botTurnTimeoutRef.current);
 			}
 		};
-	}, [gameState?.currentPlayerIndex, gameState?.phase]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [gameState?.currentPlayerIndex, gameState?.phase, gameConfig]);
 
 	const executeBotTurn = async (bot) => {
 		const tableCards = gameState.tableCards;
@@ -1170,7 +1247,19 @@ function GameSolo() {
 	return (
 		<div className="game-page">
 			<div className="game-header">
-				<h1>Card Game BISINDO</h1>
+				<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+					<h1>Card Game BISINDO</h1>
+					<span style={{
+						backgroundColor: '#4f46e5',
+						color: 'white',
+						padding: '0.25rem 0.75rem',
+						borderRadius: '0.5rem',
+						fontSize: '0.875rem',
+						fontWeight: 'bold'
+					}}>
+						Room: {roomCode}
+					</span>
+				</div>
 				<button className="btn-secondary" onClick={handleBackToHome}>
 					Keluar Room
 				</button>

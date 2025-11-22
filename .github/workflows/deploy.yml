@@ -78,6 +78,8 @@ jobs:
             docker-compose pull app
 
             # Recreate and restart containers (.env sudah ada di folder ini)
+            docker-compose down -v
+
             docker-compose up -d --force-recreate app
 
             # Clean up old images

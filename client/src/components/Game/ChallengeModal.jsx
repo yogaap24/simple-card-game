@@ -1,23 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSocket } from '../../context/SocketContext';
 import './ChallengeModal.css';
 
 function ChallengeModal({ challenge, currentUserId, onClose }) {
 	const { emit, on, off, CLIENT_EVENTS, SERVER_EVENTS } = useSocket();
 	const [hasVoted, setHasVoted] = useState(false);
+	const closeTimeoutRef = useRef(null);
 
 	const isChallenger = challenge.challengerId === currentUserId;
 	const myVote = challenge.votes[currentUserId];
 
 	useEffect(() => {
 		const handleResolved = () => {
-			setTimeout(onClose, 2000); // Close after 2 seconds
+			closeTimeoutRef.current = setTimeout(onClose, 2000); // Close after 2 seconds
 		};
 
 		on(SERVER_EVENTS.CHALLENGE_RESOLVED, handleResolved);
 
 		return () => {
 			off(SERVER_EVENTS.CHALLENGE_RESOLVED, handleResolved);
+
+			// Clear timeout on cleanup
+			if (closeTimeoutRef.current) {
+				clearTimeout(closeTimeoutRef.current);
+			}
 		};
 	}, []);
 

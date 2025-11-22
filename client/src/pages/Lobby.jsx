@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
@@ -12,6 +12,7 @@ function Lobby() {
 	const [rooms, setRooms] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
+	const errorTimeoutRef = useRef(null);
 
 	useEffect(() => {
 		if (!user) {
@@ -45,7 +46,14 @@ function Lobby() {
 		const handleError = (data) => {
 			setError(data.message);
 			setLoading(false);
-			setTimeout(() => setError(''), 5000);
+
+			// Clear previous timeout
+			if (errorTimeoutRef.current) {
+				clearTimeout(errorTimeoutRef.current);
+			}
+
+			// Set new timeout
+			errorTimeoutRef.current = setTimeout(() => setError(''), 5000);
 		};
 
 		const handleRoomsList = (data) => {
@@ -62,6 +70,11 @@ function Lobby() {
 			off(SERVER_EVENTS.ROOM_JOINED, handleRoomJoined);
 			off(SERVER_EVENTS.ERROR, handleError);
 			off(SERVER_EVENTS.ROOMS_LIST, handleRoomsList);
+
+			// Clear error timeout on cleanup
+			if (errorTimeoutRef.current) {
+				clearTimeout(errorTimeoutRef.current);
+			}
 		};
 	}, [connected]);
 

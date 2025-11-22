@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import './Home.css';
 
 // Helper for consistent SweetAlert toast notifications (top-right, small)
+// Only for Home page - game toasts won't appear here
 const showToast = (icon, title, text, timer = 2000) => {
 	Swal.fire({
 		icon,
@@ -14,7 +15,10 @@ const showToast = (icon, title, text, timer = 2000) => {
 		timer,
 		timerProgressBar: true,
 		toast: true,
-		width: '350px'
+		width: '350px',
+		customClass: {
+			popup: 'home-toast' // Unique identifier for Home toasts
+		}
 	});
 };
 
@@ -34,18 +38,22 @@ function Home() {
 			return;
 		}
 
+		// Generate unique room code
+		const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+
 		// Store game config in sessionStorage
 		const gameConfig = {
 			playerName,
 			botCount,
 			difficulty,
-			gameId: Date.now().toString(36)
+			gameId: Date.now().toString(36),
+			roomCode
 		};
 
 		sessionStorage.setItem('gameConfig', JSON.stringify(gameConfig));
 
-		// Navigate to game
-		navigate('/game');
+		// Navigate to game with room code
+		navigate(`/game/${roomCode}`);
 	};
 
 	return (
