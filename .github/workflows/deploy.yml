@@ -75,12 +75,12 @@ jobs:
             cd /home/ubuntu/workspace/card-bisindo
 
             # Pull latest image
-            docker-compose pull app
+            docker compose pull app
 
             # Recreate and restart containers (.env sudah ada di folder ini)
-            docker-compose down -v
+            docker compose down -v
 
-            docker-compose up -d --force-recreate app
+            docker compose up -d --force-recreate app
 
             # Clean up old images
             docker image prune -f
