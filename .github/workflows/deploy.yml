@@ -53,7 +53,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            mkdir -p /root/workspace/card-bisindo
+            mkdir -p /home/ubuntu/workspace/card-bisindo
 
       - name: Copy Config to VPS
         uses: appleboy/scp-action@master
@@ -62,7 +62,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           source: "docker-compose.yml"
-          target: "/root/workspace/card-bisindo"
+          target: "/home/ubuntu/workspace/card-bisindo"
           rm: false
 
       - name: Deploy via SSH
@@ -72,7 +72,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            cd /root/workspace/card-bisindo
+            cd /home/ubuntu/workspace/card-bisindo
 
             # Pull latest image
             docker-compose pull app
